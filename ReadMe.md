@@ -94,6 +94,49 @@ System.InvalidOperationException: This is a test exception with scope.
 
 ```
 
+### Using LoggerFactory
+
+For more advanced scenarios, you can use the `GetLoggerFactory()` extension method to get an `ILoggerFactory` instance that's pre-configured with TUnit logging:
+
+```csharp
+using Dameng.Logging.TUnit;
+using Microsoft.Extensions.Logging;
+
+public class Tests
+{
+    [Test]
+    public void LoggerFactoryBasic()
+    {
+        var loggerFactory = TestContext.Current!.GetLoggerFactory();
+        var logger = loggerFactory.CreateLogger("MyCategory");
+        logger.LogInformation("This is logged via LoggerFactory.");
+    }
+}
+```
+
+You can also configure additional logging providers alongside TUnit:
+
+```csharp
+[Test]
+public void LoggerFactoryWithCustomConfiguration()
+{
+    var loggerFactory = TestContext.Current!.GetLoggerFactory(
+        includeScope: true,
+        dateTimeFormat: "HH:mm:ss",
+        builderAction: builder =>
+        {
+            // Add additional logging providers or configuration
+            builder.SetMinimumLevel(LogLevel.Debug);
+            builder.AddFilter("MyCategory", LogLevel.Warning);
+        }
+    );
+    
+    var logger = loggerFactory.CreateLogger("MyCategory");
+    logger.LogInformation("This message will be filtered out due to the filter above.");
+    logger.LogWarning("This warning will be displayed.");
+}
+```
+
 #### ILogBuilder
 
 You can also use `ILogBuilder` to configure the logger with additional options.
@@ -119,4 +162,5 @@ var logger = LoggerFactory.Create(logging=>
 ```
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
