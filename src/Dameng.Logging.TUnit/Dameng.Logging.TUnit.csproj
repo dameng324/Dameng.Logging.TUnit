@@ -6,7 +6,26 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>preview</LangVersion>
+    
+    <!-- NuGet Package Metadata -->
+    <PackageId>Dameng.Logging.TUnit</PackageId>
+    <Title>Dameng Logging for TUnit</Title>
+    <Description>A NuGet package that provides an ILogger implementation that wraps around the TestContext.Current.OutputWriter supplied by TUnit. Use this logger to log messages in your TUnit tests, which will be captured and displayed in the test output.</Description>
+    <PackageTags>logging;tunit;testing;logger;ilogger;test-output</PackageTags>
+    <Authors>dameng324</Authors>
+    <Copyright>Copyright (c) 2025 dameng324</Copyright>
+    <PackageProjectUrl>https://github.com/dameng324/Dameng.Logging.TUnit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dameng324/Dameng.Logging.TUnit.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\ReadMe.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup> 
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
