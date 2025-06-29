@@ -17,9 +17,11 @@
     <PackageProjectUrl>https://github.com/dameng324/Dameng.Logging.TUnit</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dameng324/Dameng.Logging.TUnit.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>master</RepositoryBranch>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Initial release of Dameng.Logging.TUnit - provides ILogger integration for TUnit test framework with support for scopes, different log levels, and exception logging.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
