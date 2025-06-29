@@ -6,7 +6,7 @@ namespace Dameng.Logging.TUnit;
 /// <summary>
 ///  TUnit logger implementation for Microsoft.Extensions.Logging.
 /// </summary>
-internal class TUnitLogger(Context context, string? category, LogLevel minLevel, bool includeScope)
+internal class TUnitLogger(Context context, string? category, LogLevel minLevel, bool includeScope,string? dateTimeFormat)
     : ILogger
 {
     /// <inheritdoc />
@@ -63,10 +63,16 @@ internal class TUnitLogger(Context context, string? category, LogLevel minLevel,
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append($"{GetLogLevelString(logLevel)}: ");
-        stringBuilder.Append($"{category} ");
-        stringBuilder.Append($"[{eventId.Id}]: ");
+        stringBuilder.Append(DateTimeOffset.Now.ToString(dateTimeFormat));
+        
+        stringBuilder.Append($" {GetLogLevelString(logLevel)}");
+        stringBuilder.Append($" {category}");
+        if (eventId.Id != 0)
+        {
+            stringBuilder.Append($" [{eventId.Id}]");
+        }
 
+        stringBuilder.Append(": ");
         stringBuilder.Append(message);
         if (includeScope)
         {

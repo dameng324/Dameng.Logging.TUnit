@@ -7,7 +7,7 @@ namespace Dameng.Logging.TUnit;
 /// </summary>
 /// <param name="testContext"></param>
 /// <param name="includeScope"></param>
-internal class TUnitLoggerProvider(TestContext testContext, bool includeScope) : ILoggerProvider
+internal class TUnitLoggerProvider(TestContext testContext, bool includeScope,string dateTimeFormat) : ILoggerProvider
 {
     /// <summary>
     /// Creates a new instance of <see cref="T:Microsoft.Extensions.Logging.ILogger" /> for the specified category name.
@@ -16,7 +16,7 @@ internal class TUnitLoggerProvider(TestContext testContext, bool includeScope) :
     /// <returns></returns>
     public ILogger CreateLogger(string categoryName)
     {
-        return new TUnitLogger(testContext, categoryName, LogLevel.Trace, includeScope);
+        return new TUnitLogger(testContext, categoryName, LogLevel.Trace, includeScope,dateTimeFormat);
     }
 
     /// <summary>

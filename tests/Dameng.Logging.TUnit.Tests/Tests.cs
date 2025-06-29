@@ -12,7 +12,7 @@ public class Tests
     {
         var logger = TestContext.Current!.GetLogger("Basic", minLevel: minLevel);
         logger.LogCritical("This is a critical log message.");
-        logger.LogError($" This is an error log message");
+        logger.LogError($"This is an error log message");
         logger.LogWarning("This is a warning log message.");
         logger.LogInformation("This is an information log message.");
         logger.LogDebug("This is a debug log message.");
@@ -84,7 +84,23 @@ public class Tests
             .SetMinimumLevel(minLevel)).CreateLogger("ILogBuilder");
         
         logger.LogCritical("This is a critical log message.");
-        logger.LogError($" This is an error log message");
+        logger.LogError($"This is an error log message");
+        logger.LogWarning("This is a warning log message.");
+        logger.LogInformation("This is an information log message.");
+        logger.LogDebug("This is a debug log message.");
+        logger.LogTrace("This is a trace log message.");
+    }
+    [Test]
+    [Arguments(LogLevel.Trace)]
+    [Arguments(LogLevel.Information)]
+    [Arguments(LogLevel.Error)]
+    public void LogBuilder_Generic(LogLevel minLevel)
+    {
+        var logger = LoggerFactory.Create(logging=>logging.AddTUnit(TestContext.Current!,includeScope:true)
+            .SetMinimumLevel(minLevel)).CreateLogger<Tests>();
+        
+        logger.LogCritical("This is a critical log message.");
+        logger.LogError($"This is an error log message");
         logger.LogWarning("This is a warning log message.");
         logger.LogInformation("This is an information log message.");
         logger.LogDebug("This is a debug log message.");
