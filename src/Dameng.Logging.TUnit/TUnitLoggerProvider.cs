@@ -5,8 +5,6 @@ namespace Dameng.Logging.TUnit;
 /// <summary>
 /// TUnit logger provider for Microsoft.Extensions.Logging.
 /// </summary>
-/// <param name="testContext"></param>
-/// <param name="includeScope"></param>
 internal class TUnitLoggerProvider(TestContext testContext, bool includeScope,string dateTimeFormat) : ILoggerProvider
 {
     /// <summary>
