@@ -1,18 +1,42 @@
-﻿# Introduction
+﻿# Dameng.Logging.TUnit
 
-Dameng.Logging.TUnit is a NuGet package that returns an `Microsoft.Extension.Logging.ILogger` that wraps around the `TestContext.Current.OutputWriter` supplied by [TUnit](https://github.com/thomhurst/TUnit).
+[![NuGet](https://img.shields.io/nuget/v/Dameng.Logging.TUnit.svg)](https://www.nuget.org/packages/Dameng.Logging.TUnit/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Dameng.Logging.TUnit.svg)](https://www.nuget.org/packages/Dameng.Logging.TUnit/)
+[![GitHub](https://img.shields.io/github/license/dameng324/Dameng.Logging.TUnit.svg)](https://github.com/dameng324/Dameng.Logging.TUnit/blob/master/LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%20Standard%202.0-512BD4)](https://dotnet.microsoft.com/)
 
-You can use this logger to log messages in your TUnit tests, or set to user test cases, which will be captured and displayed in the test output.
+> 🧪 **Microsoft.Extensions.Logging integration for TUnit testing framework**
 
-## Installation
+A modern NuGet package that provides an `ILogger` implementation seamlessly integrated with [TUnit](https://github.com/thomhurst/TUnit)'s `TestContext.Current.OutputWriter`. Perfect for capturing structured logging output directly in your test results.
 
-Run the following in the NuGet command line or visit the [NuGet package page](https://nuget.org/packages/Dameng.Logging.TUnit).
+## ✨ Features
 
-`Install-Package Dameng.Logging.TUnit`
+- 🎯 **Native TUnit Integration** - Works seamlessly with TUnit's test context
+- 📝 **Structured Logging** - Full support for Microsoft.Extensions.Logging features
+- 🔍 **Scope Support** - Hierarchical logging scopes for better test organization
+- ⚡ **Multiple Target Frameworks** - Supports .NET 8.0, .NET 9.0, and .NET Standard 2.0
+- 🎛️ **Configurable** - Flexible configuration options for different testing scenarios
+- 🚀 **Zero Dependencies** - Minimal footprint with only essential dependencies
 
-## Usage
+## 📦 Installation
 
-You can use `TestContext.Current.GetLogger()` to get an `ILogger` instance that writes to the TUnit output.
+### Package Manager Console
+```powershell
+Install-Package Dameng.Logging.TUnit
+```
+
+### .NET CLI
+```bash
+dotnet add package Dameng.Logging.TUnit
+```
+
+Or visit the [NuGet package page](https://www.nuget.org/packages/Dameng.Logging.TUnit/) for more installation options.
+
+## 🚀 Quick Start
+
+Get started with `Dameng.Logging.TUnit` in seconds! Use `TestContext.Current.GetLogger()` to get an `ILogger` instance that writes directly to your TUnit test output.
+
+### Basic Usage
 
 ```csharp
 using Dameng.Logging.TUnit;
@@ -29,42 +53,40 @@ public class Tests
 }
 ```
 
-this will output:
-
-```
+**Output:**
+```text
 2025-06-29 15:20:13.198 crit: Basic [0]: This is a critical log message.
 ```
 
-with scope:
+### Logging with Scopes
 
 ```csharp
 var logger = TestContext.Current!.GetLogger(
     "Scope",
-    includeScope: includeScope
+    includeScope: true
 );
 using (logger.BeginScope("Scope 1"))
 {
     logger.LogInformation("This is scope 1 message.");
     using (logger.BeginScope("Scope 2"))
     {
-        logger.LogInformation($" This is scope 2 message");
+        logger.LogInformation("This is scope 2 message");
     }
-
     logger.LogInformation("This is scope 1 message after scope 2.");
 }
 ```
 
-will output:
-```
+**Output:**
+```text
 2025-06-29 15:26:54.394 info Scope: This is scope 1 message.
  => Scope 1 
-2025-06-29 15:26:54.398 info Scope:  This is scope 2 message
+2025-06-29 15:26:54.398 info Scope: This is scope 2 message
  => Scope 1  => Scope 2 
 2025-06-29 15:26:54.399 info Scope: This is scope 1 message after scope 2.
  => Scope 1
 ```
 
-with Exception:
+### Exception Logging
 
 ```csharp
 var logger = TestContext.Current!.GetLogger(
@@ -84,19 +106,19 @@ using (logger.BeginScope("Scope for exception"))
 }
 ```
 
-will output:
-
-```
+**Output:**
+```text
 2025-06-29 15:26:54.394 fail Exception: An error occurred while processing the request with scope.
  => Scope for exception 
 System.InvalidOperationException: This is a test exception with scope.
-   at Dameng.Logging.TUnit.Tests.Tests.ExceptionAndScope() in C:\Dameng.Logging.TUnit\tests\Dameng.Logging.TUnit.Tests\Tests.cs:line 68
-
+   at Dameng.Logging.TUnit.Tests.Tests.ExceptionAndScope() in C:\...\Tests.cs:line 68
 ```
+
+## 🔧 Advanced Usage
 
 ### Using LoggerFactory
 
-For more advanced scenarios, you can use the `GetLoggerFactory()` extension method to get an `ILoggerFactory` instance that's pre-configured with TUnit logging:
+For more complex scenarios, use the `GetLoggerFactory()` extension method to get a pre-configured `ILoggerFactory` with TUnit logging:
 
 ```csharp
 using Dameng.Logging.TUnit;
@@ -114,7 +136,9 @@ public class Tests
 }
 ```
 
-You can also configure additional logging providers alongside TUnit:
+### Custom Configuration
+
+Configure additional logging providers and filters alongside TUnit:
 
 ```csharp
 [Test]
@@ -137,30 +161,64 @@ public void LoggerFactoryWithCustomConfiguration()
 }
 ```
 
-#### ILogBuilder
+### Using ILoggerBuilder
 
-You can also use `ILogBuilder` to configure the logger with additional options.
+Alternative approach using `ILoggerBuilder` for additional configuration options:
 
 ```csharp
-var logger = LoggerFactory.Create(logging=>
+var logger = LoggerFactory.Create(logging =>
     logging.AddTUnit(TestContext.Current!)
-    ).CreateLogger("Basic");
+).CreateLogger("Basic");
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 ### Minimum Log Level
 
-You can set the minimum log level for the logger when using `TestContext.Current!.GetLogger` or `ILogBuilder`.
+Control the minimum log level when creating loggers:
 
+#### Using GetLogger
 ```csharp
-var logger = TestContext.Current!.GetLogger("Basic",minLevel: LogLevel.Trace);
-
-var logger = LoggerFactory.Create(logging=>
-    logging.AddTUnit(TestContext.Current!).SetMinimumLevel(LogLevel.Trace)
-    ).CreateLogger("Basic");
+var logger = TestContext.Current!.GetLogger("Basic", minLevel: LogLevel.Trace);
 ```
 
-## License
+#### Using LoggerFactory
+```csharp
+var logger = LoggerFactory.Create(logging =>
+    logging.AddTUnit(TestContext.Current!)
+           .SetMinimumLevel(LogLevel.Trace)
+).CreateLogger("Basic");
+```
+
+### Available Configuration Options
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `categoryName` | `string` | Required | The category name for the logger |
+| `includeScope` | `bool` | `false` | Whether to include scope information in log output |
+| `dateTimeFormat` | `string` | `"yyyy-MM-dd HH:mm:ss.fff"` | Custom date/time format |
+| `minLevel` | `LogLevel` | `LogLevel.Information` | Minimum log level to output |
+| `builderAction` | `Action<ILoggingBuilder>` | `null` | Additional configuration for the logging builder |
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📋 Requirements
+
+- .NET 8.0, .NET 9.0, or .NET Standard 2.0
+- TUnit testing framework
+- Microsoft.Extensions.Logging
+
+## 📝 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 🔗 Related Projects
+
+- [TUnit](https://github.com/thomhurst/TUnit) - The modern testing framework this package integrates with
+- [Microsoft.Extensions.Logging](https://docs.microsoft.com/en-us/dotnet/core/extensions/logging) - The logging abstraction this package implements
+
+---
+
+**Made with ❤️ by [dameng324](https://github.com/dameng324)**
