@@ -1,0 +1,64 @@
+{
+  "name": "Dameng.Logging.TUnit .NET Development",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-vscode.vscode-json",
+        "ms-vscode.powershell",
+        "humao.rest-client",
+        "formulahendry.dotnet-test-explorer",
+        "jmrog.vscode-nuget-package-manager",
+        "ms-vscode.test-adapter-converter"
+      ],
+      
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "dotnet.defaultSolution": "Dameng.Logging.TUnit.slnx",
+        "files.exclude": {
+          "**/bin": true,
+          "**/obj": true
+        },
+        "omnisharp.enableRoslynAnalyzers": true,
+        "omnisharp.enableEditorConfigSupport": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "dotnet restore && dotnet build",
+
+  // Use 'postStartCommand' to run commands after the container starts.
+  // "postStartCommand": "",
+
+  // Configure tool-specific properties.
+  "remoteUser": "vscode",
+
+  // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "devcontainer"
+
+  // Mount the local machine's SSH keys and Git config into the container
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+  ]
+}
