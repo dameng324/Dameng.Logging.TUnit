@@ -20,13 +20,15 @@ public static class TUnitLoggingExtensions
     /// <param name="minLevel">MinLevel of the logger</param>
     /// <param name="includeScope">value that indicates whether scopes are included.</param>
     /// <param name="dateTimeFormat">the datetime format string</param>
+    /// <param name="includeDateTime">value that indicates whether logging dateTime are included.</param>
     /// <returns></returns>
     public static ILogger GetLogger(
         this TestContext testContext,
         string? category = null,
         LogLevel minLevel = LogLevel.Information,
         bool includeScope = false,
-        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff"
+        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff",
+        bool includeDateTime = true
     )
     {
         if (testContext == null)
@@ -34,18 +36,32 @@ public static class TUnitLoggingExtensions
             throw new ArgumentNullException(nameof(testContext));
         }
 
-        return new TUnitLogger(testContext, category, minLevel, includeScope, dateTimeFormat);
+        return new TUnitLogger(
+            testContext,
+            category,
+            minLevel,
+            includeScope,
+            dateTimeFormat,
+            includeDateTime
+        );
     }
-    
+
     /// <summary>
     /// Gets a logger factory that uses TUnit's logging context.
     /// </summary>
     /// <param name="testContext">TUnit test context, usually come from TUnit.Core.TestContext.Current</param>
     /// <param name="includeScope">value that indicates whether scopes are included.</param>
     /// <param name="dateTimeFormat">the datetime format string</param>
+    /// <param name="includeDateTime">value that indicates whether logging dateTime are included.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static ILoggerFactory GetLoggerFactory(this TestContext testContext,bool includeScope = false, string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff",Action<ILoggingBuilder>? builderAction = null)
+    public static ILoggerFactory GetLoggerFactory(
+        this TestContext testContext,
+        bool includeScope = false,
+        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff",
+        Action<ILoggingBuilder>? builderAction = null,
+        bool includeDateTime = true
+    )
     {
         if (testContext == null)
         {
@@ -54,7 +70,7 @@ public static class TUnitLoggingExtensions
 
         return LoggerFactory.Create(builder =>
         {
-            builder.AddTUnit(testContext, includeScope, dateTimeFormat);
+            builder.AddTUnit(testContext, includeScope, dateTimeFormat, includeDateTime);
             if (builderAction != null)
             {
                 builderAction(builder);
@@ -69,11 +85,16 @@ public static class TUnitLoggingExtensions
     /// <param name="testContext">TUnit test context, default is TUnit.Core.TestContext.Current</param>
     /// <param name="includeScope">value that indicates whether scopes are included.</param>
     /// <param name="dateTimeFormat">the datetime format string</param>
+    /// <param name="includeDateTime">value that indicates whether logging dateTime are included.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static ILoggingBuilder AddTUnit(this ILoggingBuilder builder, TestContext? testContext,
+    public static ILoggingBuilder AddTUnit(
+        this ILoggingBuilder builder,
+        TestContext? testContext,
         bool includeScope = false,
-        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff")
+        string dateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff",
+        bool includeDateTime = true
+    )
     {
         if (builder == null)
         {
@@ -86,8 +107,15 @@ public static class TUnitLoggingExtensions
             throw new ArgumentNullException(nameof(testContext));
         }
 
-        var loggerProvider = new TUnitLoggerProvider(testContext, includeScope, dateTimeFormat);
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider>(loggerProvider));
+        var loggerProvider = new TUnitLoggerProvider(
+            testContext,
+            includeScope,
+            dateTimeFormat,
+            includeDateTime
+        );
+        builder.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<ILoggerProvider>(loggerProvider)
+        );
         return builder;
     }
 }

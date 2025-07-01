@@ -55,6 +55,9 @@ public class Tests
 
 **Output:**
 ```text
+this will output:
+
+```text
 2025-06-29 15:20:13.198 crit: Basic [0]: This is a critical log message.
 ```
 
@@ -182,13 +185,64 @@ Control the minimum log level when creating loggers:
 var logger = TestContext.Current!.GetLogger("Basic", minLevel: LogLevel.Trace);
 ```
 
-#### Using LoggerFactory
+### DateTime Format and Display
+
+You can control the datetime format and whether to include datetime in the log output:
+
+```csharp
+// Custom datetime format
+var logger = TestContext.Current!.GetLogger(
+    "CustomDateTime",
+    dateTimeFormat: "HH:mm:ss"
+);
+logger.LogInformation("This message uses custom datetime format.");
+```
+
+Output:
+
+```text
+15:30:45 info: CustomDateTime [0]: This message uses custom datetime format.
+```
+
+```csharp
+// Disable datetime display
+var logger = TestContext.Current!.GetLogger(
+    "NoDateTime",
+    includeDateTime: false
+);
+logger.LogInformation("This message has no datetime.");
+```
+
+Output:
+
+```text
+info: NoDateTime [0]: This message has no datetime.
+```
+
+You can also configure datetime settings when using `GetLoggerFactory()`:
+
+```csharp
+var loggerFactory = TestContext.Current!.GetLoggerFactory(
+    dateTimeFormat: "yyyy-MM-dd HH:mm:ss",
+    includeDateTime: true
+);
+var logger = loggerFactory.CreateLogger("MyCategory");
+logger.LogInformation("Custom datetime format via factory.");
+```
+
+Or when using `AddTUnit` with `ILoggingBuilder`:
+
 ```csharp
 var logger = LoggerFactory.Create(logging =>
-    logging.AddTUnit(TestContext.Current!)
-           .SetMinimumLevel(LogLevel.Trace)
-).CreateLogger("Basic");
+    logging.AddTUnit(
+        TestContext.Current!,
+        dateTimeFormat: "HH:mm:ss.fff",
+        includeDateTime: false
+    )
+).CreateLogger("NoDateTimeLogger");
 ```
+
+## License
 
 ### Available Configuration Options
 

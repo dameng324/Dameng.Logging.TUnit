@@ -6,6 +6,7 @@
   </Configurations>
   <Folder Name="/items/">
     <File Path=".gitignore" />
+    <File Path=".github\workflows\publish.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\Dameng.Logging.TUnit\Dameng.Logging.TUnit.csproj" Type="Classic C#">
